@@ -1,8 +1,16 @@
 package com.example.backendmentoring.user;
 
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+@EqualsAndHashCode(of = "id")
+@ToString(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(name = "uk_user_email", columnNames = "email")
@@ -10,9 +18,11 @@ import java.time.LocalDateTime;
 public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ToString.Include
     private Long id;
 
     @Column(nullable = false)
+    @ToString.Include
     private String email;
 
     @Column(nullable = false)
@@ -24,23 +34,21 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    protected User() {}
-
-    private User(String email, String username, String passwordHash) {
-        this.email = email;
-        this.username = username;
-        this.passwordHash = passwordHash;
-        this.createdAt = LocalDateTime.now();
+    @PrePersist
+    void prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
     }
 
     public static User of(String email, String username, String passwordHash) {
-        return new User(email, username, passwordHash);
+        return User.builder()
+                .email(email)
+                .username(username)
+                .passwordHash(passwordHash)
+                .build();
     }
 
-    public Long getId() { return id; }
-    public String getEmail() { return email; }
-    public String getUsername() { return username; }
-    public String getPasswordHash() { return passwordHash; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
 }
+
 

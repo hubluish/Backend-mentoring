@@ -32,8 +32,8 @@ public class AuthService {
         }
 
         String hashed = passwordEncoder.encode(req.password());
-        User saved = userRepository.save(User.of(req.email(), req.username(), hashed));
+        User savedUser = userRepository.save(User.of(req.email(), req.username(), hashed));
 
-        return new SignUpResponse(saved.getEmail(), saved.getUsername());
+        return SignUpResponse.from(savedUser);
     }
 }
