@@ -23,10 +23,6 @@ public class AuthService {
 
     @Transactional
     public SignUpResponse signUp(SignUpRequest req) {
-        if (req.email() == null || req.password() == null || req.username() == null) {
-            throw new IllegalArgumentException("email, password, username은 모두 필요합니다.");
-        }
-
         if (userRepository.existsByEmail(req.email())) {
             throw new DuplicateEmailException(req.email());
         }

@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateEmailException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public ApiErrorResponse handleDuplicateEmail(DuplicateEmailException e, HttpServletRequest req) {
-        return ApiErrorResponse.of("BAD_REQUEST", e.getMessage(), req.getRequestURI());
+        return ApiErrorResponse.of("CONFLICT", e.getMessage(), req.getRequestURI());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
