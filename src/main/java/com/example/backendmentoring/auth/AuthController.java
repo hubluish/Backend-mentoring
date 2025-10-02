@@ -2,8 +2,11 @@ package com.example.backendmentoring.auth;
 
 import com.example.backendmentoring.auth.dto.SignUpRequest;
 import com.example.backendmentoring.auth.dto.SignUpResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthController {
@@ -15,7 +18,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public SignUpResponse signUp(@RequestBody SignUpRequest request) {
+    public SignUpResponse signUp(@Valid @RequestBody SignUpRequest request) {
         return authService.signUp(request);
     }
 }
