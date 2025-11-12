@@ -13,4 +13,9 @@ public class ArticleRequestDto {
 
     @NotBlank(message = "내용은 필수 입력 값입니다.")
     private String content;
+
+    public ArticleRequestDto(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }
