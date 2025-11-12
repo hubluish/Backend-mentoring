@@ -3,6 +3,7 @@ package com.example.backendmentoring.auth;
 import com.example.backendmentoring.auth.dto.SignUpRequest;
 import com.example.backendmentoring.auth.dto.SignUpResponse;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
