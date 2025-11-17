@@ -3,26 +3,47 @@ package com.example.backendmentoring.common;
 import com.example.backendmentoring.user.DuplicateEmailException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(DuplicateEmailException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiErrorResponse handleDuplicateEmail(DuplicateEmailException e, HttpServletRequest req) {
-        return ApiErrorResponse.of("CONFLICT", e.getMessage(), req.getRequestURI());
-    }
-
     @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrorResponse handleIllegalArgument(IllegalArgumentException e, HttpServletRequest req) {
-        return ApiErrorResponse.of("BAD_REQUEST", e.getMessage(), req.getRequestURI());
+    public ResponseEntity<ApiErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
+        ApiErrorResponse errorResponse = ApiErrorResponse.of(
+                HttpStatus.BAD_REQUEST.toString(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiErrorResponse handleOthers(Exception e, HttpServletRequest req) {
-        return ApiErrorResponse.of("INTERNAL_SERVER_ERROR", "Unexpected error", req.getRequestURI());
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
+        String errorMessage;
+        if (ex.getBindingResult().getFieldError() != null) {
+            errorMessage = ex.getBindingResult().getFieldError().getDefaultMessage();
+        } else {
+            errorMessage = "Validation failed";
+        }
+        ApiErrorResponse errorResponse = ApiErrorResponse.of(
+                HttpStatus.BAD_REQUEST.toString(),
+                errorMessage,
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ApiErrorResponse> handleDuplicateEmailException(DuplicateEmailException ex, HttpServletRequest request) {
+        ApiErrorResponse errorResponse = ApiErrorResponse.of(
+                HttpStatus.CONFLICT.toString(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 }

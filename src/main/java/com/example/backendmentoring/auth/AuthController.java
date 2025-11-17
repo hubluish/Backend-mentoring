@@ -17,7 +17,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(code = org.springframework.http.HttpStatus.CREATED)
     public SignUpResponse signUp(@Valid @RequestBody SignUpRequest request) {
         return authService.signUp(request);
     }
