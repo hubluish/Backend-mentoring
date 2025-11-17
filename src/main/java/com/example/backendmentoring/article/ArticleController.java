@@ -1,5 +1,6 @@
 package com.example.backendmentoring.article;
 
+import com.example.backendmentoring.article.application.CreateArticleUseCase;
 import com.example.backendmentoring.article.dto.ArticleRequestDto;
 import com.example.backendmentoring.article.dto.ArticleResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +19,14 @@ import jakarta.validation.Valid; // 추가
 @RequiredArgsConstructor
 public class ArticleController {
 
-    private final ArticleService articleService;
+    private final CreateArticleUseCase createArticleUseCase;
 
     @PostMapping
     public ResponseEntity<ArticleResponseDto> createArticle(
             @Valid @RequestBody final ArticleRequestDto requestDto, // @Valid 추가
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        ArticleResponseDto responseDto = articleService.createArticle(requestDto, userDetails.getUsername());
+        ArticleResponseDto responseDto = createArticleUseCase.createArticle(requestDto, userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 }
