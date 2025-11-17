@@ -1,5 +1,6 @@
 package com.example.backendmentoring.common;
 
+import com.example.backendmentoring.user.DuplicateEmailException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,5 +30,15 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ApiErrorResponse> handleDuplicateEmailException(DuplicateEmailException ex, HttpServletRequest request) {
+        ApiErrorResponse errorResponse = ApiErrorResponse.of(
+                HttpStatus.CONFLICT.toString(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 }
